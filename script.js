@@ -1,4 +1,5 @@
-//your JS code here.
+//SGN your JS code here.
+let userScore = 0;
 
 // Do not change code below this line
 // This code will just display the questions to the screen
@@ -30,7 +31,10 @@ const questions = [
   },
 ];
 
-// Display the quiz questions and choices
+// Get the questions container element
+const questionsElement = document.getElementById("questions");
+
+// Function to render the quiz questions and choices
 function renderQuestions() {
   for (let i = 0; i < questions.length; i++) {
     const question = questions[i];
@@ -43,9 +47,6 @@ function renderQuestions() {
       choiceElement.setAttribute("type", "radio");
       choiceElement.setAttribute("name", `question-${i}`);
       choiceElement.setAttribute("value", choice);
-      if (userAnswers[i] === choice) {
-        choiceElement.setAttribute("checked", true);
-      }
       const choiceText = document.createTextNode(choice);
       questionElement.appendChild(choiceElement);
       questionElement.appendChild(choiceText);
@@ -53,4 +54,26 @@ function renderQuestions() {
     questionsElement.appendChild(questionElement);
   }
 }
+
+// Add event listener to the submit button to calculate the score
+document.getElementById("submit").addEventListener("click", function() {
+  // Reset user's score before calculating
+  userScore = 0;
+  // Loop through each question
+  for (let i = 0; i < questions.length; i++) {
+    const question = questions[i];
+    // Get the selected choice for the current question
+    const selectedChoice = document.querySelector(`input[name="question-${i}"]:checked`);
+    // Check if selected choice exists and matches the answer
+    if (selectedChoice && selectedChoice.value === question.answer) {
+      userScore++; // Increment score for correct answer
+    }
+  }
+  // Display user's score on the page
+  scoreOutput.textContent = `Your score is ${userScore} out of ${questions.length}.`;
+  // Store user's score in local storage
+  localStorage.setItem("userScore", userScore);
+});
+
+// Call renderQuestions function to display the quiz
 renderQuestions();
