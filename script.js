@@ -50,6 +50,10 @@ function renderQuestions() {
       const choiceText = document.createTextNode(choice);
       questionElement.appendChild(choiceElement);
       questionElement.appendChild(choiceText);
+	  const selectedIndexes = JSON.parse(sessionStorage.getItem("selectedIndexes"));
+      if (selectedIndexes && selectedIndexes.includes(j.toString())) {
+        choiceElement.checked = true;
+      }	
     }
     questionsElement.appendChild(questionElement);
   }
@@ -59,6 +63,7 @@ function renderQuestions() {
 document.getElementById("submit").addEventListener("click", function() {
   // Reset user's score before calculating
   userScore = 0;
+  const selectedIndexes = [];
   // Loop through each question
   for (let i = 0; i < questions.length; i++) {
     const question = questions[i];
@@ -67,8 +72,10 @@ document.getElementById("submit").addEventListener("click", function() {
     // Check if selected choice exists and matches the answer
     if (selectedChoice && selectedChoice.value === question.answer) {
       userScore++; // Increment score for correct answer
+	  selectedIndexes.push(selectedChoice.getAttribute("index"));
     }
   }
+	sessionStorage.setItem("selectedIndexes", JSON.stringify(selectedIndexes));
   // Display user's score on the page
   scoreOutput.textContent = `Your score is ${userScore} out of ${questions.length}.`;
   // Store user's score in local storage
