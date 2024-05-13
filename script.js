@@ -1,4 +1,5 @@
 //SGN your JS code here.
+//SGN your JS code here.
 let userScore = 0;
 
 // Do not change code below this line
@@ -47,13 +48,10 @@ function renderQuestions() {
       choiceElement.setAttribute("type", "radio");
       choiceElement.setAttribute("name", `question-${i}`);
       choiceElement.setAttribute("value", choice);
+      choiceElement.setAttribute("index", j); // Add index attribute
       const choiceText = document.createTextNode(choice);
       questionElement.appendChild(choiceElement);
       questionElement.appendChild(choiceText);
-	  const selectedIndexes = JSON.parse(sessionStorage.getItem("selectedIndexes"));
-      if (selectedIndexes && selectedIndexes.includes(j.toString())) {
-        choiceElement.checked = true;
-      }	
     }
     questionsElement.appendChild(questionElement);
   }
@@ -72,11 +70,13 @@ document.getElementById("submit").addEventListener("click", function() {
     // Check if selected choice exists and matches the answer
     if (selectedChoice && selectedChoice.value === question.answer) {
       userScore++; // Increment score for correct answer
-	  selectedIndexes.push(selectedChoice.getAttribute("index"));
+      selectedIndexes.push(selectedChoice.getAttribute("index"));
     }
   }
-	sessionStorage.setItem("selectedIndexes", JSON.stringify(selectedIndexes));
+  // Store selected indexes in sessionStorage
+  sessionStorage.setItem("selectedIndexes", JSON.stringify(selectedIndexes));
   // Display user's score on the page
+  const scoreOutput = document.getElementById("score");
   scoreOutput.textContent = `Your score is ${userScore} out of ${questions.length}.`;
   // Store user's score in local storage
   localStorage.setItem("userScore", userScore);
