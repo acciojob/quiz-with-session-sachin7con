@@ -1,5 +1,4 @@
 //SGN your JS code here.
-//SGN your JS code here.
 let userScore = 0;
 
 // Do not change code below this line
@@ -48,12 +47,22 @@ function renderQuestions() {
       choiceElement.setAttribute("type", "radio");
       choiceElement.setAttribute("name", `question-${i}`);
       choiceElement.setAttribute("value", choice);
-      choiceElement.setAttribute("index", j); // Add index attribute
       const choiceText = document.createTextNode(choice);
       questionElement.appendChild(choiceElement);
       questionElement.appendChild(choiceText);
     }
     questionsElement.appendChild(questionElement);
+  }
+  
+  // Retrieve selected indexes from sessionStorage and set checked attribute
+  const selectedIndexes = JSON.parse(sessionStorage.getItem("selectedIndexes"));
+  if (selectedIndexes) {
+    selectedIndexes.forEach(index => {
+      const radioBtn = document.querySelector(`input[index="${index}"]`);
+      if (radioBtn) {
+        radioBtn.checked = true;
+      }
+    });
   }
 }
 
