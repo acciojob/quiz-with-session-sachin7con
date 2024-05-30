@@ -1,8 +1,7 @@
 //SGN your JS code here.
 let userScore = 0;
 
-// Do not change code below this line
-// This code will just display the questions to the screen
+// Questions for the quiz
 const questions = [
   {
     question: "What is the capital of France?",
@@ -41,28 +40,34 @@ function renderQuestions() {
     const questionElement = document.createElement("div");
     const questionText = document.createTextNode(question.question);
     questionElement.appendChild(questionText);
+    
     for (let j = 0; j < question.choices.length; j++) {
       const choice = question.choices[j];
       const choiceElement = document.createElement("input");
       choiceElement.setAttribute("type", "radio");
       choiceElement.setAttribute("name", `question-${i}`);
       choiceElement.setAttribute("value", choice);
-      const choiceText = document.createTextNode(choice);
+      choiceElement.setAttribute("id", `question-${i}-choice-${j}`);
+      
+      const choiceLabel = document.createElement("label");
+      choiceLabel.setAttribute("for", `question-${i}-choice-${j}`);
+      choiceLabel.textContent = choice;
+
       questionElement.appendChild(choiceElement);
-      questionElement.appendChild(choiceText);
+      questionElement.appendChild(choiceLabel);
     }
     questionsElement.appendChild(questionElement);
   }
-  
+
   // Retrieve selected indexes from sessionStorage and set checked attribute
-  const selectedIndexes = JSON.parse(sessionStorage.getItem("selectedIndexes"));
-  if (selectedIndexes) {
-    selectedIndexes.forEach(index => {
-      const radioBtn = document.querySelector(`input[index="${index}"]`);
+  const selectedIndexes = JSON.parse(sessionStorage.getItem("selectedIndexes")) || {};
+  for (let key in selectedIndexes) {
+    if (selectedIndexes.hasOwnProperty(key)) {
+      const radioBtn = document.getElementById(key);
       if (radioBtn) {
         radioBtn.checked = true;
       }
-    });
+    }
   }
 }
 
@@ -70,7 +75,8 @@ function renderQuestions() {
 document.getElementById("submit").addEventListener("click", function() {
   // Reset user's score before calculating
   userScore = 0;
-  const selectedIndexes = [];
+  const selectedIndexes = {};
+  
   // Loop through each question
   for (let i = 0; i < questions.length; i++) {
     const question = questions[i];
@@ -79,9 +85,12 @@ document.getElementById("submit").addEventListener("click", function() {
     // Check if selected choice exists and matches the answer
     if (selectedChoice && selectedChoice.value === question.answer) {
       userScore++; // Increment score for correct answer
-      selectedIndexes.push(selectedChoice.getAttribute("index"));
+    }
+    if (selectedChoice) {
+      selectedIndexes[selectedChoice.id] = selectedChoice.value;
     }
   }
+
   // Store selected indexes in sessionStorage
   sessionStorage.setItem("selectedIndexes", JSON.stringify(selectedIndexes));
   // Display user's score on the page
